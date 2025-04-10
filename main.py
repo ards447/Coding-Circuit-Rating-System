@@ -30,7 +30,7 @@ for _, row in participants_df.iterrows():
     participant_data[participant] = {
         'rating': 1000,
         'events_participated': 0,
-        'consicutive_misses': 0,
+        'consecutive_misses': 0,
         'events': events
     }
 
@@ -109,17 +109,18 @@ for event in events:
             del_R = W * K * delta
             participant_data[participant]['rating'] = max(1000, np.round(R + del_R))
             participant_data[participant]['events_participated'] += 1
-            participant_data[participant]['consicutive_misses'] = 0  # Reset missed event count
+            participant_data[participant]['consecutive_misses'] = 0  # Reset missed event count
 
     # Apply rating decay for participants who missed the event
     for participant in participant_data:
         if participant not in participants_in_event:
             R = participant_data[participant]['rating']
-            participant_data[participant]['consicutive_misses'] += 1
-            participant_data[participant]['rating'] = apply_decay(R, participant_data[participant]['consicutive_misses'])
+            participant_data[participant]['consecutive_misses'] += 1
+            participant_data[participant]['rating'] = apply_decay(R, participant_data[participant]['consecutive_misses'])
 
     # Save leaderboard after each event
     save_leaderboard(participant_data, f'./output/leaderboard_after_{event}.csv')
    
-# Generate final leaderboard
+## Generate final leaderboard
+
 save_leaderboard(participant_data, './output/final_leaderboard.csv')
